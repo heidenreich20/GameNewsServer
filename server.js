@@ -33,8 +33,8 @@ app.post("/addNew", async (req, res) => {
   }
 });
 
-app.get("/test", (req, res) => {
-  res.render({});
+app.get("/análisis", (req, res) => {
+  res.render("Hello World");
 });
 
 const NewsModel = require("./Models/News");
