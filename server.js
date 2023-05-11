@@ -33,10 +33,6 @@ app.post("/addNew", async (req, res) => {
   }
 });
 
-app.get("/análisis", (req, res) => {
-  res.render("Hello World");
-});
-
 const NewsModel = require("./Models/News");
 
 app.use(express.json());
@@ -60,6 +56,10 @@ app.get("/news", async (req, res) => {
     }
     res.send(result);
   }).sort({ createdAt: -1 });
+});
+
+app.get('/análisis', function(req, res){
+  res.send('hello world');
 });
 
 app.listen(process.env.PORT, () => {
