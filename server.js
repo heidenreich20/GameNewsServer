@@ -58,10 +58,6 @@ app.get("/news", async (req, res) => {
   }).sort({ createdAt: -1 });
 });
 
-app.get('/analisis', function(req, res){
-  res.render({});
-});
-
 app.listen(process.env.PORT, () => {
   console.log("Server running on port " + process.env.PORT);
 });
