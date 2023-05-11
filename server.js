@@ -8,6 +8,12 @@ const app = express();
 
 app.use(express.json());
 
+const corsOptions = {
+  origin: "https://game-news-liard.vercel.app",
+};
+
+app.use(cors(corsOptions));
+
 app.post("/addNew", async (req, res) => {
   const schema = Joi.object({
     title: Joi.string().required(),
@@ -49,7 +55,7 @@ const dbConnect = () => {
   });
 };
 
-app.get("/news", async (req, res) => {
+app.get("/news", cors(), async (req, res) => {
   NewsModel.find({}, (err, result) => {
     if (err) {
       res.send(err);
