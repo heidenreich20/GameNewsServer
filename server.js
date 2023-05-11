@@ -59,7 +59,7 @@ app.get("/news", async (req, res) => {
 });
 
 app.get('/analisis', function(req, res){
-  res.send('hello world');
+  res.render({});
 });
 
 app.listen(process.env.PORT, () => {
