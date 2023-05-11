@@ -58,7 +58,7 @@ app.get("/news", async (req, res) => {
   }).sort({ createdAt: -1 });
 });
 
-app.get('/análisis', function(req, res){
+app.get('/analisis', function(req, res){
   res.send('hello world');
 });
 
