@@ -56,6 +56,7 @@ const dbConnect = () => {
 };
 
 app.get("/news", cors(), async (req, res) => {
+  const totalNewsCount = await NewsModel.countDocuments({}).exec();
   const limit = parseInt(req.query.limit);
 
   if (isNaN(limit) || limit <= 0) {
@@ -66,7 +67,7 @@ app.get("/news", cors(), async (req, res) => {
     const newsList = await NewsModel.find()
       .sort({ createdAt: -1 })
       .limit(limit);
-    res.json(newsList);
+    res.json( newsList, totalNewsCount );
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Server error" });
