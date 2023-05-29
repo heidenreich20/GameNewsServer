@@ -56,12 +56,21 @@ const dbConnect = () => {
 };
 
 app.get("/news", cors(), async (req, res) => {
-  NewsModel.find({}, (err, result) => {
-    if (err) {
-      res.send(err);
-    }
-    res.send(result);
-  }).sort({ createdAt: -1 });
+  const limit = parseInt(req.query.limit);
+
+  if (isNaN(limit) || limit <= 0) {
+    return res.status(400).json({ error: "Invalid limit parameter" });
+  }
+
+  try {
+    const newsList = await NewsModel.find()
+      .sort({ createdAt: -1 })
+      .limit(limit);
+    res.json(newsList);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
+  }
 });
 
 app.listen(process.env.PORT, () => {
