@@ -59,12 +59,10 @@ app.get("/news", cors(), async (req, res) => {
   const limit = parseInt(req.query.limit);
   let newsQuery = NewsModel.find().sort({ createdAt: -1 });
 
-  if (isNaN(limit) || limit <= 0) {
-    newsQuery = newsQuery.limit();
-  } else {
+  if (!isNaN(limit) && limit > 0) {
     newsQuery = newsQuery.limit(limit);
   }
-
+  
   // Get the selected category from the request query parameter
   const category = req.query.category;
 
@@ -87,7 +85,7 @@ app.get("/news", cors(), async (req, res) => {
       totalNewsCount = await NewsModel.countDocuments({}).exec();
 
       // Retrieve all news
-      newsList = await NewsModel.find().sort({ createdAt: -1 }).exec();
+      newsList = await newsQuery.exec();
     }
     
     res.status(200).json({ newsList, totalNewsCount });
@@ -96,8 +94,6 @@ app.get("/news", cors(), async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
-
-
 
 app.listen(process.env.PORT, () => {
   console.log("Server running on port " + process.env.PORT);
