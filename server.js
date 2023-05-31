@@ -57,30 +57,24 @@ const dbConnect = () => {
 
 app.get("/news", cors(), async (req, res) => {
   const limit = parseInt(req.query.limit);
-  
+  let newsQuery = NewsModel.find().sort({ createdAt: -1 });
+
   if (isNaN(limit) || limit <= 0) {
-    try {
-      const totalNewsCount = await NewsModel.countDocuments({}).exec();
-      const newsList = await NewsModel.find()
-        .sort({ createdAt: -1 })
-      res.json({ newsList, totalNewsCount });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: "Server error" });
-    }
+    newsQuery = newsQuery.limit();
+  } else {
+    newsQuery = newsQuery.limit(limit);
   }
   
   try {
     const totalNewsCount = await NewsModel.countDocuments({}).exec();
-    const newsList = await NewsModel.find()
-      .sort({ createdAt: -1 })
-      .limit(limit);
-    res.json({ newsList, totalNewsCount });
+    const newsList = await newsQuery.exec();
+    res.status(200).json({ newsList, totalNewsCount });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Server error" });
+    res.status(500).json({ error: "Internal server error" });
   }
 });
+
 
 app.listen(process.env.PORT, () => {
   console.log("Server running on port " + process.env.PORT);
