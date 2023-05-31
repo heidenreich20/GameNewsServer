@@ -64,16 +64,39 @@ app.get("/news", cors(), async (req, res) => {
   } else {
     newsQuery = newsQuery.limit(limit);
   }
+
+  // Get the selected category from the request query parameter
+  const category = req.query.category;
+
+  if (category) {
+    newsQuery = newsQuery.where('category').equals(category);
+  }
   
   try {
-    const totalNewsCount = await NewsModel.countDocuments({}).exec();
-    const newsList = await newsQuery.exec();
+    let totalNewsCount;
+    let newsList;
+
+    if (category) {
+      // Count the total number of news with the specified category
+      totalNewsCount = await NewsModel.countDocuments({ category }).exec();
+      
+      // Retrieve the news list with the specified category
+      newsList = await newsQuery.exec();
+    } else {
+      // Count the total number of all news
+      totalNewsCount = await NewsModel.countDocuments({}).exec();
+
+      // Retrieve all news
+      newsList = await NewsModel.find().sort({ createdAt: -1 }).exec();
+    }
+    
     res.status(200).json({ newsList, totalNewsCount });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
 
 
 app.listen(process.env.PORT, () => {
