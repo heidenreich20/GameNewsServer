@@ -73,7 +73,7 @@ app.get("/news", cors(), async (req, res) => {
     }
   
     const totalNewsCount = await NewsModel.countDocuments(query).exec();
-    const newsList = await NewsModel.find(query)
+    const newsList = await NewsModel.find(category !== {} ? `category: ${query}` : query)
       .sort({ createdAt: -1 })
       .limit(limit);
   
