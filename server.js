@@ -56,6 +56,17 @@ const dbConnect = () => {
 };
 
 app.get("/news", cors(), async (req, res) => {
+  try {
+    const totalNewsCount = await NewsModel.countDocuments({}).exec();
+    const newsList = await NewsModel.find().sort({ createdAt: -1 }).exec();
+    res.json({ newsList, totalNewsCount });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+app.get("/news/category", cors(), async (req, res) => {
   const limit = parseInt(req.query.limit);
   let category = req.query.category;
 
