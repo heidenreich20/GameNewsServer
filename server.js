@@ -68,6 +68,7 @@ app.get("/news", cors(), async (req, res) => {
     const newsList = await NewsModel.find(category ? `category: ${category}` : {})
       .sort({ createdAt: -1 })
       .limit(limit)
+    console.log(category)
     res.json({ newsList, totalNewsCount });
   } catch (error) {
     console.error(error);
