@@ -65,15 +65,16 @@ app.get("/news", cors(), async (req, res) => {
   
   try {
     let categoryExists = true;
+    let error = null;
 
     if (category) {
       // Check if the category exists in the database
       const categoryCount = await NewsModel.countDocuments({ category }).exec();
       categoryExists = categoryCount > 0;
-    }
 
-    if (!categoryExists) {
-      return res.status(400).json({ error: "Category does not exist" });
+      if (!categoryExists) {
+        error = "Category does not exist";
+      }
     }
     
     const totalNewsCount = await NewsModel.countDocuments({}).exec();
@@ -82,7 +83,7 @@ app.get("/news", cors(), async (req, res) => {
       .sort({ createdAt: -1 })
       .limit(limit);
 
-    res.json({ newsList, totalNewsCount });
+    res.json({ newsList, totalNewsCount, error });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Server error" });
