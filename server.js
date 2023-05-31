@@ -57,7 +57,8 @@ const dbConnect = () => {
 
 app.get("/news", cors(), async (req, res) => {
   const limit = parseInt(req.query.limit);
-  const category = parseInt(req.query.category);
+  const category = req.query.category;
+  console.log(category)
   
   if (isNaN(limit) || limit <= 0) {
     return res.status(400).json({ error: "Invalid limit parameter" });
@@ -68,7 +69,6 @@ app.get("/news", cors(), async (req, res) => {
     const newsList = await NewsModel.find(category ? `category: ${category}` : {})
       .sort({ createdAt: -1 })
       .limit(limit)
-    console.log(category)
     res.json({ newsList, totalNewsCount });
   } catch (error) {
     console.error(error);
