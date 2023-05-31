@@ -64,10 +64,19 @@ app.get("/news", cors(), async (req, res) => {
   }
   
   try {
-    const totalNewsCount = await NewsModel.countDocuments({}).exec();
-    const newsList = await NewsModel.find()
+    let query = {};
+  
+    // Check if a category is provided
+    if (req.query.category) {
+      // Include the category in the query
+      query.category = req.query.category;
+    }
+  
+    const totalNewsCount = await NewsModel.countDocuments(query).exec();
+    const newsList = await NewsModel.find(query)
       .sort({ createdAt: -1 })
-      .limit(limit)
+      .limit(limit);
+  
     res.json({ newsList, totalNewsCount });
   } catch (error) {
     console.error(error);
