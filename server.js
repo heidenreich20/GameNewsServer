@@ -65,7 +65,7 @@ app.get("/news", cors(), async (req, res) => {
   
   try {
     const totalNewsCount = await NewsModel.countDocuments({}).exec();
-    const newsList = await NewsModel.find({'category': category })
+    const newsList = await NewsModel.find()
       .sort({ createdAt: -1 })
       .limit(limit)
     res.json({ newsList, totalNewsCount });
