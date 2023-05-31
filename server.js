@@ -57,41 +57,21 @@ const dbConnect = () => {
 
 app.get("/news", cors(), async (req, res) => {
   const limit = parseInt(req.query.limit);
-  let newsQuery = NewsModel.find().sort({ createdAt: -1 });
-
-  if (!isNaN(limit) && limit > 0) {
-    newsQuery = newsQuery.limit(limit);
-  }
+  const category = parseInt(req.query.category);
   
-  // Get the selected category from the request query parameter
-  const category = req.query.category;
-
-  if (category) {
-    newsQuery = newsQuery.where('category').equals(category);
+  if (isNaN(limit) || limit <= 0) {
+    return res.status(400).json({ error: "Invalid limit parameter" });
   }
   
   try {
-    let totalNewsCount;
-    let newsList;
-
-    if (category) {
-      // Count the total number of news with the specified category
-      totalNewsCount = await NewsModel.countDocuments({ category }).exec();
-      
-      // Retrieve the news list with the specified category
-      newsList = await newsQuery.exec();
-    } else {
-      // Count the total number of all news
-      totalNewsCount = await NewsModel.countDocuments({}).exec();
-
-      // Retrieve all news
-      newsList = await newsQuery.exec();
-    }
-    
-    res.status(200).json({ newsList, totalNewsCount });
+    const totalNewsCount = await NewsModel.countDocuments({}).exec();
+    const newsList = await NewsModel.find({'category': category })
+      .sort({ createdAt: -1 })
+      .limit(limit)
+    res.json({ newsList, totalNewsCount });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: "Server error" });
   }
 });
 
