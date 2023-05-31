@@ -58,18 +58,30 @@ const dbConnect = () => {
 app.get("/news", cors(), async (req, res) => {
   const limit = parseInt(req.query.limit);
   const category = req.query.category;
-  console.log(category)
-
+  
   if (isNaN(limit) || limit <= 0) {
     return res.status(400).json({ error: "Invalid limit parameter" });
   }
   
   try {
+    let categoryExists = true;
+
+    if (category) {
+      // Check if the category exists in the database
+      const categoryCount = await NewsModel.countDocuments({ category }).exec();
+      categoryExists = categoryCount > 0;
+    }
+
+    if (!categoryExists) {
+      return res.status(400).json({ error: "Category does not exist" });
+    }
+    
     const totalNewsCount = await NewsModel.countDocuments({}).exec();
-    const query = category !== 'undefined' ? { category: category } : {};
+    const query = category ? { category } : {};
     const newsList = await NewsModel.find(query)
       .sort({ createdAt: -1 })
-      .limit(limit)
+      .limit(limit);
+
     res.json({ newsList, totalNewsCount });
   } catch (error) {
     console.error(error);
