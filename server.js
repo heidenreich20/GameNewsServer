@@ -59,14 +59,15 @@ app.get("/news", cors(), async (req, res) => {
   const limit = parseInt(req.query.limit);
   const category = req.query.category;
   console.log(category)
-  
+
   if (isNaN(limit) || limit <= 0) {
     return res.status(400).json({ error: "Invalid limit parameter" });
   }
   
   try {
     const totalNewsCount = await NewsModel.countDocuments({}).exec();
-    const newsList = await NewsModel.find(category ? `category: ${category}` : {})
+    const query = category ? { category: category } : {};
+    const newsList = await NewsModel.find(query)
       .sort({ createdAt: -1 })
       .limit(limit)
     res.json({ newsList, totalNewsCount });
