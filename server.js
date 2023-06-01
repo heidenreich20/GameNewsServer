@@ -77,13 +77,14 @@ app.get("/news/category", cors(), async (req, res) => {
   try {
     let categoryExists = true;
     let error = null;
+    let categoryCount = 0;
 
     if (category) {
       // Perform fuzzy matching for category
       category = new RegExp(category, "i");
 
       // Check if the category exists in the database
-      const categoryCount = await NewsModel.countDocuments({ category }).exec();
+      categoryCount = await NewsModel.countDocuments({ category }).exec();
       categoryExists = categoryCount > 0;
 
       if (!categoryExists) {
@@ -97,12 +98,13 @@ app.get("/news/category", cors(), async (req, res) => {
       .sort({ createdAt: -1 })
       .limit(limit);
 
-    res.json({ newsList, totalNewsCount, error });
+    res.json({ newsList, categoryCount, totalNewsCount, error });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Server error" });
   }
 });
+
 
 app.listen(process.env.PORT, () => {
   console.log("Server running on port " + process.env.PORT);
