@@ -97,7 +97,7 @@ app.get("/news/category", cors(), async (req, res) => {
       .sort({ createdAt: -1 })
       .limit(limit);
 
-    res.json({ newsList, totalNewsCount, error });
+    res.json({ newsList, totalNewsCount, categoryCount, error });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Server error" });
