@@ -119,9 +119,8 @@ app.get("/getreviews/:id", cors(), async (req, res) => {
 });
 
 app.get('*', function(req, res) {
-  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+  res.send('hello world')
 });
-
 app.listen(process.env.PORT, () => {
   console.log("Server running on port " + process.env.PORT);
 });
