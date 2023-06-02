@@ -4,16 +4,15 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 require("dotenv").config();
 
+const NewsModel = require("./Models/News");
+
 const app = express();
 
+// Middleware
 app.use(express.json());
+app.use(cors({ origin: "https://game-news-liard.vercel.app" }));
 
-const corsOptions = {
-  origin: "https://game-news-liard.vercel.app",
-};
-
-app.use(cors(corsOptions));
-
+// Routes
 app.post("/addNew", async (req, res) => {
   const schema = Joi.object({
     title: Joi.string().required(),
@@ -39,27 +38,25 @@ app.post("/addNew", async (req, res) => {
   }
 });
 
-const NewsModel = require("./Models/News");
-
-app.use(express.json());
-app.use(cors());
-mongoose.set("strictQuery", true);
-
-const dbConnect = () => {
-  mongoose.connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-  });
-
-  mongoose.connection.on("connected", () => {
-    console.log("Connected to the database");
-  });
-};
-
 app.get("/news", cors(), async (req, res) => {
   try {
     const totalNewsCount = await NewsModel.countDocuments({}).exec();
     const newsList = await NewsModel.find().sort({ createdAt: -1 }).exec();
     res.json({ newsList, totalNewsCount });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+app.get("/news/:id", cors(), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const article = await NewsModel.findById(id).exec();
+    if (!article) {
+      return res.status(404).json({ error: "Article not found" });
+    }
+    res.json({ article });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Server error" });
@@ -105,9 +102,18 @@ app.get("/news/category", cors(), async (req, res) => {
   }
 });
 
+// Connect to database and start the server
+mongoose.set("strictQuery", true);
 
-app.listen(process.env.PORT, () => {
-  console.log("Server running on port " + process.env.PORT);
-});
+const dbConnect = () => {
+  mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true });
+
+  mongoose.connection.on("connected", () => {
+    console.log("Connected to the database");
+    app.listen(process.env.PORT, () => {
+      console.log("Server running on port " + process.env.PORT);
+    });
+  });
+};
 
 dbConnect();
