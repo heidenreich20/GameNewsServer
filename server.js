@@ -54,10 +54,6 @@ const dbConnect = () => {
   });
 };
 
-app.get('*', function(req, res) {
-  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
-});
-
 app.get("/news", cors(), async (req, res) => {
   try {
     const totalNewsCount = await NewsModel.countDocuments({}).exec();
@@ -120,6 +116,10 @@ app.get("/getreviews/:id", cors(), async (req, res) => {
     console.error(error);
     res.status(500).json({ error: "Server error" });
   }
+});
+
+app.get('*', function(req, res) {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
 app.listen(process.env.PORT, () => {
