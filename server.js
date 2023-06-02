@@ -105,7 +105,7 @@ app.get("/news/category", cors(), async (req, res) => {
   }
 });
 
-app.get("/news/:id", cors(), async (req, res) => {
+app.get("/getreviews/:id", cors(), async (req, res) => {
   try {
     const { id } = req.params;
     const article = await NewsModel.findById(id).exec();
