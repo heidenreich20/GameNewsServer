@@ -45,6 +45,16 @@ app.use(express.json());
 app.use(cors());
 mongoose.set("strictQuery", true);
 
+const dbConnect = () => {
+  mongoose.connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+  });
+
+  mongoose.connection.on("connected", () => {
+    console.log("Connected to the database");
+  });
+};
+
 app.get("/news", cors(), async (req, res) => {
   try {
     const totalNewsCount = await NewsModel.countDocuments({}).exec();
@@ -69,6 +79,7 @@ app.get("/news/:id", cors(), async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 });
+
 
 app.get("/news/category", cors(), async (req, res) => {
   const limit = parseInt(req.query.limit);
@@ -110,13 +121,8 @@ app.get("/news/category", cors(), async (req, res) => {
 });
 
 
-const dbConnect = () => {
-  mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true });
+app.listen(process.env.PORT, () => {
+  console.log("Server running on port " + process.env.PORT);
+});
 
-  mongoose.connection.on("connected", () => {
-    console.log("Connected to the database");
-    app.listen(process.env.PORT, () => {
-      console.log("Server running on port " + process.env.PORT);
-    });
-  });
-};
+dbConnect();
