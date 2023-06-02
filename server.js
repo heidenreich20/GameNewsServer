@@ -7,8 +7,7 @@ require("dotenv").config();
 
 const app = express();
 
-app.use(express.json());
-app.use(express.static(path.join(__dirname, "build")));
+app.use(express.static(path.join(__dirname, 'build')));
 
 const corsOptions = {
   origin: "https://game-news-liard.vercel.app",
@@ -43,8 +42,6 @@ app.post("/addNew", async (req, res) => {
 
 const NewsModel = require("./Models/News");
 
-app.use(express.json());
-app.use(cors());
 mongoose.set("strictQuery", true);
 
 const dbConnect = () => {
@@ -56,6 +53,10 @@ const dbConnect = () => {
     console.log("Connected to the database");
   });
 };
+
+app.get('/', function(req, res) {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
 
 app.get("/news", cors(), async (req, res) => {
   try {
@@ -119,10 +120,6 @@ app.get("/getreviews/:id", cors(), async (req, res) => {
     console.error(error);
     res.status(500).json({ error: "Server error" });
   }
-});
-
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "build", "index.html"));
 });
 
 app.listen(process.env.PORT, () => {
