@@ -7,7 +7,7 @@ require("dotenv").config();
 
 const app = express();
 
-app.use(express.static(path.join(__dirname, 'build')));
+app.use(express.static(path.join(__dirname, 'dist')));
 
 const corsOptions = {
   origin: "https://game-news-liard.vercel.app",
@@ -54,8 +54,8 @@ const dbConnect = () => {
   });
 };
 
-app.get('/', function(req, res) {
-  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+app.get('*', function(req, res) {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
 app.get("/news", cors(), async (req, res) => {
