@@ -4,15 +4,16 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 require("dotenv").config();
 
-const NewsModel = require("./Models/News");
-
 const app = express();
 
-// Middleware
 app.use(express.json());
-app.use(cors({ origin: "https://game-news-liard.vercel.app" }));
 
-// Routes
+const corsOptions = {
+  origin: "https://game-news-liard.vercel.app",
+};
+
+app.use(cors(corsOptions));
+
 app.post("/addNew", async (req, res) => {
   const schema = Joi.object({
     title: Joi.string().required(),
@@ -37,6 +38,12 @@ app.post("/addNew", async (req, res) => {
     res.status(500).send("Internal server error");
   }
 });
+
+const NewsModel = require("./Models/News");
+
+app.use(express.json());
+app.use(cors());
+mongoose.set("strictQuery", true);
 
 app.get("/news", cors(), async (req, res) => {
   try {
@@ -102,8 +109,6 @@ app.get("/news/category", cors(), async (req, res) => {
   }
 });
 
-// Connect to database and start the server
-mongoose.set("strictQuery", true);
 
 const dbConnect = () => {
   mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true });
@@ -115,5 +120,3 @@ const dbConnect = () => {
     });
   });
 };
-
-dbConnect();
