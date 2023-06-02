@@ -1,4 +1,5 @@
 const Joi = require("joi");
+const path = require("path");
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
@@ -7,6 +8,7 @@ require("dotenv").config();
 const app = express();
 
 app.use(express.json());
+app.use(express.static(path.join(__dirname, "build")));
 
 const corsOptions = {
   origin: "https://game-news-liard.vercel.app",
@@ -119,6 +121,9 @@ app.get("/getreviews/:id", cors(), async (req, res) => {
   }
 });
 
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "build", "index.html"));
+});
 
 app.listen(process.env.PORT, () => {
   console.log("Server running on port " + process.env.PORT);
