@@ -66,21 +66,6 @@ app.get("/news", cors(), async (req, res) => {
   }
 });
 
-app.get("/news/:id", cors(), async (req, res) => {
-  try {
-    const { id } = req.params;
-    const article = await NewsModel.findById(id).exec();
-    if (!article) {
-      return res.status(404).json({ error: "Article not found" });
-    }
-    res.json({ article });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Server error" });
-  }
-});
-
-
 app.get("/news/category", cors(), async (req, res) => {
   const limit = parseInt(req.query.limit);
   let category = req.query.category;
@@ -114,6 +99,20 @@ app.get("/news/category", cors(), async (req, res) => {
       .limit(limit);
 
     res.json({ newsList, categoryCount, totalNewsCount, error });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+app.get("/news/:id", cors(), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const article = await NewsModel.findById(id).exec();
+    if (!article) {
+      return res.status(404).json({ error: "Article not found" });
+    }
+    res.json({ article });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Server error" });
