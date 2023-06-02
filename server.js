@@ -7,8 +7,6 @@ require("dotenv").config();
 
 const app = express();
 
-app.use(express.static(path.join(__dirname, "dist")));
-
 const corsOptions = {
   origin: "https://game-news-liard.vercel.app",
 };
@@ -119,8 +117,9 @@ app.get("/getreviews/:id", cors(), async (req, res) => {
 });
 
 app.get('*', function(req, res) {
-  res.send('hello world')
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
+
 app.listen(process.env.PORT, () => {
   console.log("Server running on port " + process.env.PORT);
 });
