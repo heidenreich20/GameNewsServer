@@ -118,10 +118,8 @@ app.get("/getreviews/:id", cors(), async (req, res) => {
   }
 });
 
-app.get('*', function(req, res) {
-  const filePath = path.join(__dirname, 'dist', 'index.html');
-  console.log(filePath); // Log the file path to the console
-  res.sendFile(filePath); // Send the file as the response
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "dist", "index.html"));
 });
 
 app.listen(process.env.PORT, () => {
