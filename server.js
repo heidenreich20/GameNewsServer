@@ -83,18 +83,16 @@ app.get("/news/category", cors(), async (req, res) => {
       category = new RegExp(category, "i");
 
       // Check if the category exists in the database
-      if (category !== "all") {
-        categoryCount = await NewsModel.countDocuments({ category }).exec();
-        categoryExists = categoryCount > 0;
+      categoryCount = await NewsModel.countDocuments({ category }).exec();
+      categoryExists = categoryCount > 0;
 
-        if (!categoryExists) {
-          error = "Category does not exist";
-        }
+      if (!categoryExists) {
+        error = "Category does not exist";
       }
     }
 
     const totalNewsCount = await NewsModel.countDocuments({}).exec();
-    const query = category !== "all" && categoryExists ? { category } : {};
+    const query = categoryExists ? { category } : {};
     const newsList = await NewsModel.find(query)
       .sort({ createdAt: -1 })
       .limit(limit);
