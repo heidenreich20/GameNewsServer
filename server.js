@@ -7,6 +7,8 @@ require("dotenv").config();
 
 const app = express();
 
+app.use(express.static(path.join(__dirname, "dist")));
+
 const corsOptions = {
   origin: "https://game-news-liard.vercel.app",
 };
@@ -117,7 +119,9 @@ app.get("/getreviews/:id", cors(), async (req, res) => {
 });
 
 app.get('*', function(req, res) {
-  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+  const filePath = path.join(__dirname, 'dist', 'index.html');
+  console.log(filePath); // Log the file path to the console
+  res.sendFile(filePath); // Send the file as the response
 });
 
 app.listen(process.env.PORT, () => {
