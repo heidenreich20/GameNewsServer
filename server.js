@@ -1,5 +1,5 @@
 const Joi = require("joi");
-import helmet from "helmet";
+const helmet = require("helmet");
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
