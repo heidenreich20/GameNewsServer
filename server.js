@@ -10,7 +10,7 @@ const app = express();
 app.use(helmet());
 
 const corsOptions = {
-  origin: "https://game-news-liard.vercel.app",
+  origin: ["https://game-news-liard.vercel.app", "https://next-game-news.vercel.app/"],
 };
 
 app.use(cors(corsOptions));
