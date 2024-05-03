@@ -79,10 +79,7 @@ app.get("/news/category", cors(), async (req, res) => {
     let categoryCount = 0;
 
     if (category) {
-      // Perform fuzzy matching for category
       category = new RegExp(category, "i");
-
-      // Check if the category exists in the database
       categoryCount = await NewsModel.countDocuments({ category }).exec();
       categoryExists = categoryCount > 0;
 
