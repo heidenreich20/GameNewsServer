@@ -18,7 +18,7 @@ const NewsSchema = new mongoose.Schema(
     category: {
       type: String,
       required: [true, "category required"],
-      index: true, // Optimizes the category filter queries we wrote earlier
+      index: true,
     },
     author: {
       type: String,
