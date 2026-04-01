@@ -11,7 +11,7 @@ const app = express();
 app.use(helmet());
 app.use(express.json());
 app.use(cors({
-  origin: ["https://game-news-liard.vercel.app", "https://next-game-news.vercel.app"]
+  origin: ["https://game-news-liard.vercel.app", "https://next-game-news.vercel.app", "http://localhost:3000"]
 }));
 
 app.use("/news", newsRoutes);
