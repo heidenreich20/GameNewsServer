@@ -5,13 +5,12 @@ const NewsSchema = new mongoose.Schema(
     title: {
       type: String,
       required: [true, "title required"],
+      trim: true,
     },
-
     text: {
       type: String,
       required: [true, "text required"],
     },
-
     image: {
       type: String,
       required: [true, "image required"],
@@ -19,14 +18,15 @@ const NewsSchema = new mongoose.Schema(
     category: {
       type: String,
       required: [true, "category required"],
+      index: true, // Optimizes the category filter queries we wrote earlier
     },
-
     author: {
       type: String,
       required: [true, "author required"],
     },
     console: {
-      type: Array,
+      type: [String],
+      default: [],
     },
     type: {
       type: String,
@@ -35,6 +35,8 @@ const NewsSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+NewsSchema.index({ title: "text", text: "text" });
 
 const News = mongoose.model("News", NewsSchema);
 module.exports = News;
