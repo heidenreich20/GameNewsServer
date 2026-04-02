@@ -32,7 +32,7 @@ exports.getNews = async (req, res) => {
 
     const [totalNewsCount, newsList] = await Promise.all([
       NewsModel.countDocuments({}).exec(),
-      NewsModel.find().sort({ createdAt: -1 }).skip(skip).limit(limit).exec()
+      NewsModel.find().sort({ createdAt: -1, _id: -1 }).skip(skip).limit(limit).exec()
     ]);
 
     res.json({
@@ -72,10 +72,12 @@ exports.getNewsByCategory = async (req, res) => {
 
 exports.getNewsById = async (req, res) => {
   try {
-    const article = await NewsModel.findById(req.params.id).exec();
-    if (!article) return res.status(404).json({ error: "Article not found" });
-    res.json({ article });
+    const article = await NewsModel.findById(req.params.id).exec()
+    if (!article) return res.status(404).json({ error: 'Article not found' })
+    res.json({ article })
   } catch (error) {
-    res.status(500).json({ error: "Server error" });
+    if (error.name === 'CastError')
+      return res.status(400).json({ error: 'Invalid article ID' })
+    res.status(500).json({ error: 'Server error' })
   }
-};
+}
